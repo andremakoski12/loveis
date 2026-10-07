@@ -1,199 +1,129 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#171312">
-  <meta name="description" content="Uma carta digital feita para celebrar a história de André e Leandro.">
-  <title>André & Leandro — Nossa História</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#171312">
+<title>André & Leandro — Nossa História</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="grain"></div>
+<div class="grain"></div>
+<button class="music-control" id="musicToggle" aria-label="Tocar ou pausar nossa música"><span>♫</span><span id="musicLabel">Tocar nossa música</span></button>
+<audio id="loveSong" preload="metadata" loop><source src="assets/eu-te-amo-sem-culpa.mp3" type="audio/mpeg"></audio>
 
-  <button class="music-control" id="musicToggle" aria-label="Tocar ou pausar música">
-    <span class="music-icon">♫</span>
-    <span id="musicLabel">Tocar nossa música</span>
-  </button>
+<main>
+<section class="hero">
+  <div class="hero-photo"><img src="assets/imagem01.jpg" alt="André e Leandro"></div><div class="hero-overlay"></div>
+  <div class="hero-content reveal">
+    <p class="eyebrow">uma história para guardar</p>
+    <h1>André <span>&</span> Leandro</h1>
+    <p class="hero-subtitle">Duas cidades. Um encontro. Uma escolha.</p>
+    <div class="hero-date"><b>23.08</b><small>primeiro encontro</small></div>
+    <button class="scroll-button" data-scroll="#story">Conhecer a história <span>↓</span></button>
+  </div>
+</section>
 
-  <audio id="loveSong" preload="metadata" loop>
-    <!-- Coloque seu arquivo local em assets/eu-te-amo-sem-culpa.mp3 -->
-    <source src="assets/eu-te-amo-sem-culpa.mp3" type="audio/mpeg">
-  </audio>
+<section class="section intro" id="story">
+  <div class="section-number">01</div>
+  <div class="intro-copy reveal">
+    <p class="eyebrow">23 de agosto</p>
+    <h2>Algumas histórias<br><em>começam sem avisar.</em></h2>
+    <p>Ele, de Londrina. Eu, de Maringá. Duas cidades que já existiam antes de nós, mas que, naquele dia, passaram a fazer parte da mesma história.</p>
+    <p>Foi na Virada Cultural que nos encontramos. E existe uma pequena ironia bonita nisso: ele nem gostava muito de eventos assim... e mesmo assim veio.</p>
+    <p class="memory-line">E, para completar a primeira impressão, ainda teve a minha piada sobre a vaga prioritária de estacionamento quando ele chegou.</p>
+    <p class="date-highlight">23.08 · Maringá</p>
+  </div>
+</section>
 
-  <main>
-    <!-- ABERTURA -->
-    <section class="hero">
-      <div class="hero-photo">
-        <img src="assets/imagem01.jpg" alt="André e Leandro">
-      </div>
-      <div class="hero-overlay"></div>
+<section class="distance-section">
+  <div class="distance-content reveal">
+    <p class="eyebrow">duas cidades</p>
+    <div class="cities">
+      <div class="city"><strong>Maringá</strong><span>André</span></div>
+      <div class="route"><i></i><b></b><em>♡</em><b></b><i></i></div>
+      <div class="city"><strong>Londrina</strong><span>Leandro</span></div>
+    </div>
+    <h2>A distância existe.<br><em>Mas não entre nós.</em></h2>
+    <p>Talvez uma das coisas mais bonitas seja perceber que pertencimento não depende de morar no mesmo lugar. Às vezes, ele simplesmente aparece quando duas pessoas decidem criar um lugar uma na vida da outra.</p>
+  </div>
+</section>
 
-      <div class="hero-content">
-        <p class="eyebrow">uma história para guardar</p>
-        <h1>André <span>&</span> Leandro</h1>
-        <p class="hero-subtitle">Desde 13 de setembro 2026.</p>
-        <button class="scroll-button" data-scroll="#story" aria-label="Conhecer nossa história">
-          <span>Conhecer a história</span>
-          <span class="arrow">↓</span>
-        </button>
-      </div>
-    </section>
+<section class="counter-section">
+  <div class="counter-inner reveal">
+    <p class="eyebrow">desde 13 de setembro</p>
+    <h2>Desde que escolhemos<br><em>ser nós.</em></h2>
+    <div class="counter">
+      <div><strong id="days">0</strong><span>dias</span></div><div><strong id="hours">00</strong><span>horas</span></div>
+      <div><strong id="minutes">00</strong><span>minutos</span></div><div><strong id="seconds">00</strong><span>segundos</span></div>
+    </div>
+    <p class="counter-note">e cada segundo continua fazendo parte da nossa história.</p>
+  </div>
+</section>
 
-    <!-- INTRO -->
-    <section class="section intro" id="story">
-      <div class="section-number">01</div>
-      <div class="intro-copy">
-        <p class="eyebrow">onde tudo começou</p>
-        <h2>Algumas histórias<br><em>simplesmente acontecem.</em></h2>
-        <p>
-          E há encontros que, mesmo sem fazer barulho, mudam a maneira
-          como os dias passam a ser percebidos, nem que seja em uma Virada Cultural
-        </p>
-        <p class="date-highlight">13.09 · 20:00</p>
-      </div>
-    </section>
+<section class="next-month-section">
+  <div class="next-month-content reveal">
+    <p class="eyebrow">e o próximo capítulo já está chegando</p>
+    <h2>Até o próximo<br><em>dia 13.</em></h2>
+    <div class="countdown">
+      <div><strong id="nextDays">00</strong><span>dias</span></div><div><strong id="nextHours">00</strong><span>horas</span></div>
+      <div><strong id="nextMinutes">00</strong><span>minutos</span></div><div><strong id="nextSeconds">00</strong><span>segundos</span></div>
+    </div>
+    <p id="nextMonthLabel" class="next-month-label"></p>
+  </div>
+</section>
 
-    <!-- CONTADOR -->
-    <section class="counter-section">
-      <div class="counter-inner">
-        <p class="eyebrow">tempo compartilhado</p>
-        <h2>Desde aquele momento</h2>
-        <div class="counter" id="counter">
-          <div><strong id="days">0</strong><span>dias</span></div>
-          <div><strong id="hours">0</strong><span>horas</span></div>
-          <div><strong id="minutes">0</strong><span>minutos</span></div>
-          <div><strong id="seconds">0</strong><span>segundos</span></div>
-        </div>
-        <p class="counter-note">e cada segundo continua fazendo parte da nossa história.</p>
-      </div>
-    </section>
+<section class="section gallery-section">
+  <div class="section-heading reveal"><div><p class="eyebrow">alguns capítulos</p><h2>Momentos que<br><em>merecem permanecer.</em></h2></div><p class="gallery-hint">deslize →</p></div>
+  <div class="gallery" id="gallery">
+    <figure class="gallery-card reveal"><span class="image-number">01</span><img src="assets/imagem01.jpg" alt="André e Leandro"><figcaption><small>primeiro registro</small><span>onde a nossa história começou a ganhar forma</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">02</span><img src="assets/imagem02.jpg" alt="Momento em Londrina"><figcaption><small>um primeiro capítulo</small><span>uma noite bonita — nossa primeira vez em Londrina</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">03</span><img src="assets/imagem03.jpg" alt="Registro especial"><figcaption><small>em registros</small><span>um lugar para lembrar, guardado também em nós</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">04</span><img src="assets/imagem04.jpg" alt="Trabalho e momentos compartilhados"><figcaption><small>caminhos que se cruzam</small><span>trabalhos que nos unem e aproximam nossos caminhos</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">05</span><img src="assets/imagem05.jpg" alt="André e Leandro juntos"><figcaption><small>nós</small><span>do nosso jeito</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">06</span><img src="assets/imagem06.jpg" alt="Mais um capítulo"><figcaption><small>mais um capítulo</small><span>dos nossos pequenos contos</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">07</span><img src="assets/imagem07.jpg" alt="Primeira balada"><figcaption><small>primeiras vezes</small><span>para lembrar da nossa primeira balada</span></figcaption></figure>
+    <figure class="gallery-card reveal"><span class="image-number">08</span><img src="assets/imagem08.jpg" alt="Um momento para guardar"><figcaption><small>e ainda estamos escrevendo</small><span>porque essa história não terminou aqui</span></figcaption></figure>
+  </div>
+</section>
 
-    <!-- GALERIA -->
-    <section class="section gallery-section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">alguns capítulos</p>
-          <h2>Momentos que<br><em>merecem permanecer.</em></h2>
-        </div>
-        <p class="gallery-hint">deslize →</p>
-      </div>
+<section class="quote-section"><div class="quote-inner reveal"><div class="quote-mark">“</div><blockquote>Que o amor seja também<br>um lugar onde os dois<br>possam <em>pertencer.</em></blockquote><p>— André & Leandro</p></div></section>
 
-      <div class="gallery" id="gallery">
-        <figure class="gallery-card active">
-          <img src="assets/imagem02.jpg" alt="Momento especial">
-          <figcaption>uma noite bonita, em Londrina 1ª vez</figcaption>
-        </figure>
-        <figure class="gallery-card">
-          <img src="assets/imagem03.jpg" alt="Momento especial">
-          <figcaption>um lugar para lembrar, em registros</figcaption>
-        </figure>
-        <figure class="gallery-card">
-          <img src="assets/imagem04.jpg" alt="Momento especial">
-          <figcaption>trabalhos que nos unem, nos aproxima</figcaption>
-        </figure>
-        <figure class="gallery-card">
-          <img src="assets/imagem05.jpg" alt="Momento especial">
-          <figcaption>nós, do nosso jeito</figcaption>
-        </figure>
-        <figure class="gallery-card">
-          <img src="assets/imagem06.jpg" alt="Momento especial">
-          <figcaption>mais um capítulo de contos</figcaption>
-        </figure>
-        <figure class="gallery-card">
-          <img src="assets/imagem07.jpg" alt="Momento especial">
-          <figcaption>para relembrar 1ª balada</figcaption>
-        </figure>
-      </div>
-    </section>
+<section class="section timeline-section">
+  <div class="section-number">02</div>
+  <div class="timeline-content">
+    <div class="reveal"><p class="eyebrow">pequenas coisas</p><h2>O que faz uma história<br><em>ter significado.</em></h2></div>
+    <div class="timeline">
+      <article class="timeline-item reveal"><span>01</span><div><h3>O encontro</h3><p>O instante em que nossas histórias se encontraram pela primeira vez, em uma Virada Cultural que talvez nem fosse o programa favorito dele.</p></div></article>
+      <article class="timeline-item reveal"><span>02</span><div><h3>Aquilo que virou memória</h3><p>Conversas, olhares, risadas e aquelas pequenas coisas que talvez ninguém mais perceba, mas que para nós passam a ter outro significado.</p></div></article>
+      <article class="timeline-item reveal"><span>03</span><div><h3>O cotidiano</h3><p>Porque pertencimento também mora nos dias comuns, quando simplesmente estar junto basta... ou dormir... rs.</p></div></article>
+      <article class="timeline-item reveal"><span>04</span><div><h3>A escolha</h3><p>Uma história bonita não precisa saber todos os próximos capítulos para continuar sendo escrita. Só precisa da escolha diária — e eu te escolho todos os dias.</p></div></article>
+    </div>
+  </div>
+</section>
 
-    <!-- FRASE -->
-    <section class="quote-section">
-      <div class="quote-mark">“</div>
-      <blockquote>
-        Que o amor seja também<br>
-        um lugar onde os dois<br>
-        possam <em>pertencer.</em>
-      </blockquote>
-      <p>— André & Leandro</p>
-    </section>
+<section class="between-section"><div class="between-content reveal">
+  <p class="eyebrow">e talvez essa seja a parte mais bonita</p>
+  <h2>Nem tudo que é importante<br><em>foi fotografado.</em></h2>
+  <p>Existem momentos que ficaram somente na memória: uma conversa, uma risada, uma chegada, um silêncio confortável, um jeito de olhar, uma noite comum.</p>
+  <p>Nem toda história cabe em uma fotografia. Algumas partes simplesmente ficam dentro da gente.</p>
+</div></section>
 
-    <!-- TIMELINE -->
-    <section class="section timeline-section">
-      <div class="section-number">02</div>
-      <div class="timeline-content">
-        <p class="eyebrow">pequenas coisas</p>
-        <h2>O que faz uma história<br><em>ter significado.</em></h2>
+<section class="letter-section"><div class="letter reveal">
+  <p class="eyebrow">uma pequena carta</p><h2>Para nós.</h2>
+  <p>Entre tantos encontros possíveis, existe algo especial em encontrar alguém com quem os momentos parecem ganhar outra textura. Um encontro de almas que sempre se buscaram e, finalmente, se encontraram.</p>
+  <p>Que nunca faltem carinho, presença, cuidado e atenção um com o outro, e espaço para que cada um continue sendo exatamente quem é — e, ainda assim, exista um lugar bonito para os dois.</p>
+  <p>Que a distância entre Maringá e Londrina nunca seja maior do que a vontade de estar perto.</p>
+  <p class="signature">André <span>♡</span> Leandro</p>
+</div></section>
 
-        <div class="timeline">
-          <article class="timeline-item">
-            <span>01</span>
-            <div>
-              <h3>O encontro</h3>
-              <p>O instante em que nossas histórias passaram a caminhar na mesma direção.</p>
-            </div>
-          </article>
-          <article class="timeline-item">
-            <span>02</span>
-            <div>
-              <h3>Os detalhes</h3>
-              <p>Conversas, olhares, risadas e aquelas pequenas coisas que ninguém mais percebe.</p>
-            </div>
-          </article>
-          <article class="timeline-item">
-            <span>03</span>
-            <div>
-              <h3>O cotidiano</h3>
-              <p>Porque pertencimento também mora nos dias comuns, quando simplesmente estar junto basta... ou dormir... rs</p>
-            </div>
-          </article>
-          <article class="timeline-item">
-            <span>04</span>
-            <div>
-              <h3>O que ainda vem</h3>
-              <p>Uma história bonita não precisa saber todos os próximos capítulos para continuar sendo escrita, só precisa da escolha diária, e eu te escolho todos os dias!!!</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- CARTA -->
-    <section class="letter-section">
-      <div class="letter">
-        <p class="eyebrow">uma pequena carta</p>
-        <h2>Para nós.</h2>
-        <p>
-          Entre tantos encontros possíveis, existe algo especial em encontrar
-          alguém com quem os momentos parecem ganhar outra textura, encontro de 
-          almas que sempre se buscaram e finalmente se encontraram.
-        </p>
-        <p>
-          Que nunca faltem carinho, presença, cuidado, atneção com o outro 
-          e espaço para que cada um continue sendo exatamente quem é — e, 
-          ainda assim, exista um lugar bonito para os dois.
-        </p>
-        <p class="signature">André <span>♡</span> Leandro</p>
-      </div>
-    </section>
-
-    <!-- FINAL -->
-    <section class="final-section">
-      <img src="assets/imagem08.jpg" alt="Um último momento para guardar" class="final-photo">
-      <div class="final-overlay"></div>
-      <div class="final-content">
-        <p class="eyebrow">13.09 · 20:00</p>
-        <h2>Que seja sempre<br><em>casa.</em></h2>
-        <p>André & Leandro</p>
-        <div class="heart">♡</div>
-      </div>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
+<section class="final-section"><img src="assets/imagem08.jpg" alt="Um último momento para guardar" class="final-photo"><div class="final-overlay"></div>
+  <div class="final-content reveal"><p class="eyebrow">13.09 · o começo de nós</p><h2>Que seja sempre<br><em>casa.</em></h2><p>André & Leandro</p><div class="heart">♡</div><p class="final-note">E que ainda existam muitos capítulos para chamar de nossos.</p></div>
+</section>
+</main>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,115 +1,62 @@
-const relationshipStart = new Date("2026-09-13T20:00:00-03:00");
+const relationshipStart=new Date("2026-09-13T00:00:00-03:00");
 
-const els = {
-  days: document.getElementById("days"),
-  hours: document.getElementById("hours"),
-  minutes: document.getElementById("minutes"),
-  seconds: document.getElementById("seconds"),
-  song: document.getElementById("loveSong"),
-  musicToggle: document.getElementById("musicToggle"),
-  musicLabel: document.getElementById("musicLabel")
-};
+const el=id=>document.getElementById(id);
 
-function updateCounter() {
-  const now = new Date();
-  let diff = now - relationshipStart;
-
-  if (diff < 0) diff = 0;
-
-  const second = 1000;
-  const minute = second * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
-
-  const days = Math.floor(diff / day);
-  const hours = Math.floor((diff % day) / hour);
-  const minutes = Math.floor((diff % hour) / minute);
-  const seconds = Math.floor((diff % minute) / second);
-
-  els.days.textContent = days.toLocaleString("pt-BR");
-  els.hours.textContent = String(hours).padStart(2, "0");
-  els.minutes.textContent = String(minutes).padStart(2, "0");
-  els.seconds.textContent = String(seconds).padStart(2, "0");
+function updateRelationship(){
+  let diff=Math.max(0,new Date()-relationshipStart);
+  const s=1000,m=s*60,h=m*60,d=h*24;
+  el("days").textContent=Math.floor(diff/d).toLocaleString("pt-BR");
+  el("hours").textContent=String(Math.floor(diff% d/h)).padStart(2,"0");
+  el("minutes").textContent=String(Math.floor(diff% h/m)).padStart(2,"0");
+  el("seconds").textContent=String(Math.floor(diff% m/s)).padStart(2,"0");
 }
 
-updateCounter();
-setInterval(updateCounter, 1000);
+function nextDay13(now){
+  let target=new Date(now.getFullYear(),now.getMonth(),13,0,0,0);
+  if(target<=now) target=new Date(now.getFullYear(),now.getMonth()+1,13,0,0,0);
+  return target;
+}
 
-// Música: navegadores normalmente bloqueiam autoplay.
-// O usuário inicia pelo botão.
-els.musicToggle.addEventListener("click", async () => {
-  try {
-    if (els.song.paused) {
-      await els.song.play();
-      els.musicLabel.textContent = "Pausar nossa música";
-      els.musicToggle.classList.add("playing");
-    } else {
-      els.song.pause();
-      els.musicLabel.textContent = "Tocar nossa música";
-      els.musicToggle.classList.remove("playing");
-    }
-  } catch (error) {
-    els.musicLabel.textContent = "Coloque a música em assets/";
-    console.warn("Não foi possível iniciar o áudio:", error);
-  }
+function updateNext(){
+  const now=new Date(),target=nextDay13(now);
+  let diff=Math.max(0,target-now);
+  const s=1000,m=s*60,h=m*60,d=h*24;
+  el("nextDays").textContent=String(Math.floor(diff/d)).padStart(2,"0");
+  el("nextHours").textContent=String(Math.floor(diff%d/h)).padStart(2,"0");
+  el("nextMinutes").textContent=String(Math.floor(diff%h/m)).padStart(2,"0");
+  el("nextSeconds").textContent=String(Math.floor(diff%m/s)).padStart(2,"0");
+  el("nextMonthLabel").textContent="Próximo capítulo: "+new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"long",year:"numeric"}).format(target);
+}
+
+const song=el("loveSong"),musicToggle=el("musicToggle"),musicLabel=el("musicLabel");
+musicToggle.addEventListener("click",async()=>{
+  try{
+    if(song.paused){await song.play();musicLabel.textContent="Pausar nossa música";musicToggle.classList.add("playing");}
+    else{song.pause();musicLabel.textContent="Tocar nossa música";musicToggle.classList.remove("playing");}
+  }catch(e){musicLabel.textContent="Adicione a música em assets/";}
 });
 
-// Rolagem suave dos botões.
-document.querySelectorAll("[data-scroll]").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelector(button.dataset.scroll)?.scrollIntoView({
-      behavior: "smooth"
-    });
+document.querySelectorAll("[data-scroll]").forEach(btn=>{
+  btn.addEventListener("click",()=>document.querySelector(btn.dataset.scroll)?.scrollIntoView({behavior:"smooth"}));
+});
+
+const gallery=document.getElementById("gallery");
+let down=false,startX=0,scrollLeft=0;
+gallery.addEventListener("mousedown",e=>{down=true;startX=e.pageX-gallery.offsetLeft;scrollLeft=gallery.scrollLeft});
+gallery.addEventListener("mouseleave",()=>down=false);
+gallery.addEventListener("mouseup",()=>down=false);
+gallery.addEventListener("mousemove",e=>{
+  if(!down)return;e.preventDefault();
+  gallery.scrollLeft=scrollLeft-(e.pageX-gallery.offsetLeft-startX)*1.2;
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}
   });
-});
+},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(x=>observer.observe(x));
 
-// Arrastar a galeria no desktop.
-const gallery = document.getElementById("gallery");
-let isDown = false;
-let startX = 0;
-let scrollLeft = 0;
-
-gallery.addEventListener("mousedown", e => {
-  isDown = true;
-  startX = e.pageX - gallery.offsetLeft;
-  scrollLeft = gallery.scrollLeft;
-});
-
-gallery.addEventListener("mouseleave", () => isDown = false);
-gallery.addEventListener("mouseup", () => isDown = false);
-
-gallery.addEventListener("mousemove", e => {
-  if (!isDown) return;
-  e.preventDefault();
-  const x = e.pageX - gallery.offsetLeft;
-  const walk = (x - startX) * 1.2;
-  gallery.scrollLeft = scrollLeft - walk;
-});
-
-// Pequena entrada elegante quando os blocos aparecem.
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll(
-  ".intro-copy, .counter-inner, .section-heading, .gallery-card, .timeline-item, .letter, .final-content"
-).forEach(el => {
-  el.style.opacity = "0";
-  el.style.transform = "translateY(18px)";
-  el.style.transition = "opacity .8s ease, transform .8s ease";
-  observer.observe(el);
-});
-
-const revealStyle = document.createElement("style");
-revealStyle.textContent = `
-  .visible {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-  }
-`;
-document.head.appendChild(revealStyle);
+updateRelationship();updateNext();
+setInterval(updateRelationship,1000);
+setInterval(updateNext,1000);

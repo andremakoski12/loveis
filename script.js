@@ -1,14 +1,56 @@
-const song=document.getElementById('loveSong'),toggle=document.getElementById('musicToggle'),label=document.getElementById('musicLabel');
-const start=new Date('2026-09-13T00:00:00-03:00'); let musicWasPlaying=false,savedTime=0,active=null;
-const id=x=>document.getElementById(x);
-function relationship(){let x=Math.max(0,Date.now()-start.getTime()),s=1000,m=s*60,h=m*60,d=h*24;id('days').textContent=Math.floor(x/d);id('hours').textContent=String(Math.floor(x%d/h)).padStart(2,'0');id('minutes').textContent=String(Math.floor(x%h/m)).padStart(2,'0');id('seconds').textContent=String(Math.floor(x%m/s)).padStart(2,'0')}
-function next13(){let n=new Date();let t=new Date(n.getFullYear(),n.getMonth(),13);if(t<=n)t=new Date(n.getFullYear(),n.getMonth()+1,13);let x=t-n,s=1000,m=s*60,h=m*60,d=h*24;id('nextDays').textContent=String(Math.floor(x/d)).padStart(2,'0');id('nextHours').textContent=String(Math.floor(x%d/h)).padStart(2,'0');id('nextMinutes').textContent=String(Math.floor(x%h/m)).padStart(2,'0');id('nextSeconds').textContent=String(Math.floor(x%m/s)).padStart(2,'0');id('nextLabel').textContent='Próximo dia 13: '+t.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}
-function fade(to,ms=800){let from=song.volume,t=performance.now();function f(n){let p=Math.min(1,(n-t)/ms);song.volume=Math.max(0,Math.min(1,from+(to-from)*p));if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
-toggle.onclick=async()=>{if(song.paused){song.volume=.62;try{await song.play();label.textContent='Pausar nossa música'}catch(e){label.textContent='Coloque a música em assets/'}}else{song.pause();label.textContent='Tocar nossa música'}};
-async function videoStart(v){if(!song.paused){musicWasPlaying=true;savedTime=song.currentTime;fade(0);setTimeout(()=>song.pause(),850)}try{v.muted=false;await v.play()}catch(e){v.muted=true;try{await v.play()}catch(_){} }active=v}
-function musicBack(){if(!musicWasPlaying)return;musicWasPlaying=false;song.currentTime=savedTime;song.volume=0;song.play().then(()=>fade(.62,1000)).catch(()=>{})}
-document.querySelectorAll('.memory-video').forEach(v=>{v.volume=.85;let b=v.parentElement.querySelector('.sound');b.onclick=e=>{e.stopPropagation();v.muted=!v.muted;b.textContent=v.muted?'sem som':'som'};v.addEventListener('ended',()=>{if(active===v){active=null;musicBack()}})});
-const io=new IntersectionObserver(es=>es.forEach(e=>{let v=e.target.querySelector('video');if(e.isIntersecting&&e.intersectionRatio>.55){document.querySelectorAll('.memory-video').forEach(o=>{if(o!==v&&!o.paused)o.pause()});videoStart(v)}else if(!e.isIntersecting&&active===v){v.pause();active=null;musicBack()}}),{threshold:[.55,.8]});document.querySelectorAll('.video-frame').forEach(x=>io.observe(x));
-document.querySelectorAll('[data-scroll]').forEach(b=>b.onclick=()=>document.querySelector(b.dataset.scroll).scrollIntoView({behavior:'smooth'}));
-const reveal=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(x=>reveal.observe(x));
-relationship();next13();setInterval(relationship,1000);setInterval(next13,1000);
+const song=document.getElementById('loveSong');
+const toggle=document.getElementById('musicToggle');
+const label=document.getElementById('musicLabel');
+let musicWanted=false, musicVolume=.72, fadeTimer=null;
+
+function setMusicLabel(){label.textContent=song.paused?'Tocar nossa música':'Pausar nossa música'}
+function fadeTo(target,duration=700){
+ clearInterval(fadeTimer); const start=song.volume,distance=target-start,steps=18; let step=0;
+ fadeTimer=setInterval(()=>{step++;song.volume=Math.min(1,Math.max(0,start+distance*(step/steps)));if(step>=steps){clearInterval(fadeTimer);fadeTimer=null}},duration/steps)
+}
+async function playMusic(){musicWanted=true;try{await song.play();fadeTo(musicVolume,500)}catch(e){}setMusicLabel()}
+function pauseMusic(){musicWanted=false;fadeTo(0,350);setTimeout(()=>{if(!musicWanted)song.pause()},380);setMusicLabel()}
+toggle.addEventListener('click',()=>song.paused?playMusic():pauseMusic());
+song.volume=musicVolume;setMusicLabel();
+
+/* 13/09/2026 é somente a data oficial do namoro.
+   Como o horário real não é conhecido, o contador usa 00:00 no horário de Brasília
+   como referência técnica, sem afirmar que esse foi o horário da oficialização. */
+const start=new Date('2026-09-13T00:00:00-03:00');
+function relationship(){
+ const elapsed=Math.max(0,Date.now()-start.getTime()),s=1000,m=s*60,h=m*60,d=h*24;
+ document.getElementById('days').textContent=Math.floor(elapsed/d);
+ document.getElementById('hours').textContent=String(Math.floor(elapsed%d/h)).padStart(2,'0');
+ document.getElementById('minutes').textContent=String(Math.floor(elapsed%h/m)).padStart(2,'0');
+ document.getElementById('seconds').textContent=String(Math.floor(elapsed%m/s)).padStart(2,'0');
+}
+relationship();setInterval(relationship,1000);
+
+const videos=document.querySelectorAll('.memory-video');
+function lowerMusicForVideo(){if(!song.paused)fadeTo(.10,700)}
+function restoreMusicAfterVideo(){if(musicWanted&&!song.paused)fadeTo(musicVolume,900)}
+videos.forEach(video=>{
+ const frame=video.closest('.video-frame'),soundButton=frame.querySelector('.sound');
+ video.addEventListener('play',lowerMusicForVideo);
+ video.addEventListener('ended',restoreMusicAfterVideo);
+ video.addEventListener('pause',()=>{if(video.currentTime<video.duration-.25)restoreMusicAfterVideo()});
+ soundButton.addEventListener('click',()=>{
+  video.muted=!video.muted;soundButton.textContent=video.muted?'som':'mudo';
+  if(!video.muted)videos.forEach(other=>{if(other!==video){other.pause();other.muted=true}})
+ });
+});
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+ const video=entry.target;
+ if(entry.isIntersecting&&entry.intersectionRatio>=.45)video.play().catch(()=>{});
+ else video.pause();
+}),{threshold:[0,.45,.8]});
+videos.forEach(video=>observer.observe(video));
+
+const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+ if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+document.querySelectorAll('[data-scroll]').forEach(button=>button.addEventListener('click',()=>{
+ const target=document.querySelector(button.dataset.scroll);if(target)target.scrollIntoView({behavior:'smooth'})
+}));

@@ -1,62 +1,14 @@
-const relationshipStart=new Date("2026-09-13T00:00:00-03:00");
-
-const el=id=>document.getElementById(id);
-
-function updateRelationship(){
-  let diff=Math.max(0,new Date()-relationshipStart);
-  const s=1000,m=s*60,h=m*60,d=h*24;
-  el("days").textContent=Math.floor(diff/d).toLocaleString("pt-BR");
-  el("hours").textContent=String(Math.floor(diff% d/h)).padStart(2,"0");
-  el("minutes").textContent=String(Math.floor(diff% h/m)).padStart(2,"0");
-  el("seconds").textContent=String(Math.floor(diff% m/s)).padStart(2,"0");
-}
-
-function nextDay13(now){
-  let target=new Date(now.getFullYear(),now.getMonth(),13,0,0,0);
-  if(target<=now) target=new Date(now.getFullYear(),now.getMonth()+1,13,0,0,0);
-  return target;
-}
-
-function updateNext(){
-  const now=new Date(),target=nextDay13(now);
-  let diff=Math.max(0,target-now);
-  const s=1000,m=s*60,h=m*60,d=h*24;
-  el("nextDays").textContent=String(Math.floor(diff/d)).padStart(2,"0");
-  el("nextHours").textContent=String(Math.floor(diff%d/h)).padStart(2,"0");
-  el("nextMinutes").textContent=String(Math.floor(diff%h/m)).padStart(2,"0");
-  el("nextSeconds").textContent=String(Math.floor(diff%m/s)).padStart(2,"0");
-  el("nextMonthLabel").textContent="Próximo capítulo: "+new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"long",year:"numeric"}).format(target);
-}
-
-const song=el("loveSong"),musicToggle=el("musicToggle"),musicLabel=el("musicLabel");
-musicToggle.addEventListener("click",async()=>{
-  try{
-    if(song.paused){await song.play();musicLabel.textContent="Pausar nossa música";musicToggle.classList.add("playing");}
-    else{song.pause();musicLabel.textContent="Tocar nossa música";musicToggle.classList.remove("playing");}
-  }catch(e){musicLabel.textContent="Adicione a música em assets/";}
-});
-
-document.querySelectorAll("[data-scroll]").forEach(btn=>{
-  btn.addEventListener("click",()=>document.querySelector(btn.dataset.scroll)?.scrollIntoView({behavior:"smooth"}));
-});
-
-const gallery=document.getElementById("gallery");
-let down=false,startX=0,scrollLeft=0;
-gallery.addEventListener("mousedown",e=>{down=true;startX=e.pageX-gallery.offsetLeft;scrollLeft=gallery.scrollLeft});
-gallery.addEventListener("mouseleave",()=>down=false);
-gallery.addEventListener("mouseup",()=>down=false);
-gallery.addEventListener("mousemove",e=>{
-  if(!down)return;e.preventDefault();
-  gallery.scrollLeft=scrollLeft-(e.pageX-gallery.offsetLeft-startX)*1.2;
-});
-
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}
-  });
-},{threshold:.12});
-document.querySelectorAll(".reveal").forEach(x=>observer.observe(x));
-
-updateRelationship();updateNext();
-setInterval(updateRelationship,1000);
-setInterval(updateNext,1000);
+const song=document.getElementById('loveSong'),toggle=document.getElementById('musicToggle'),label=document.getElementById('musicLabel');
+const start=new Date('2026-09-13T00:00:00-03:00'); let musicWasPlaying=false,savedTime=0,active=null;
+const id=x=>document.getElementById(x);
+function relationship(){let x=Math.max(0,Date.now()-start.getTime()),s=1000,m=s*60,h=m*60,d=h*24;id('days').textContent=Math.floor(x/d);id('hours').textContent=String(Math.floor(x%d/h)).padStart(2,'0');id('minutes').textContent=String(Math.floor(x%h/m)).padStart(2,'0');id('seconds').textContent=String(Math.floor(x%m/s)).padStart(2,'0')}
+function next13(){let n=new Date();let t=new Date(n.getFullYear(),n.getMonth(),13);if(t<=n)t=new Date(n.getFullYear(),n.getMonth()+1,13);let x=t-n,s=1000,m=s*60,h=m*60,d=h*24;id('nextDays').textContent=String(Math.floor(x/d)).padStart(2,'0');id('nextHours').textContent=String(Math.floor(x%d/h)).padStart(2,'0');id('nextMinutes').textContent=String(Math.floor(x%h/m)).padStart(2,'0');id('nextSeconds').textContent=String(Math.floor(x%m/s)).padStart(2,'0');id('nextLabel').textContent='Próximo dia 13: '+t.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}
+function fade(to,ms=800){let from=song.volume,t=performance.now();function f(n){let p=Math.min(1,(n-t)/ms);song.volume=Math.max(0,Math.min(1,from+(to-from)*p));if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+toggle.onclick=async()=>{if(song.paused){song.volume=.62;try{await song.play();label.textContent='Pausar nossa música'}catch(e){label.textContent='Coloque a música em assets/'}}else{song.pause();label.textContent='Tocar nossa música'}};
+async function videoStart(v){if(!song.paused){musicWasPlaying=true;savedTime=song.currentTime;fade(0);setTimeout(()=>song.pause(),850)}try{v.muted=false;await v.play()}catch(e){v.muted=true;try{await v.play()}catch(_){} }active=v}
+function musicBack(){if(!musicWasPlaying)return;musicWasPlaying=false;song.currentTime=savedTime;song.volume=0;song.play().then(()=>fade(.62,1000)).catch(()=>{})}
+document.querySelectorAll('.memory-video').forEach(v=>{v.volume=.85;let b=v.parentElement.querySelector('.sound');b.onclick=e=>{e.stopPropagation();v.muted=!v.muted;b.textContent=v.muted?'sem som':'som'};v.addEventListener('ended',()=>{if(active===v){active=null;musicBack()}})});
+const io=new IntersectionObserver(es=>es.forEach(e=>{let v=e.target.querySelector('video');if(e.isIntersecting&&e.intersectionRatio>.55){document.querySelectorAll('.memory-video').forEach(o=>{if(o!==v&&!o.paused)o.pause()});videoStart(v)}else if(!e.isIntersecting&&active===v){v.pause();active=null;musicBack()}}),{threshold:[.55,.8]});document.querySelectorAll('.video-frame').forEach(x=>io.observe(x));
+document.querySelectorAll('[data-scroll]').forEach(b=>b.onclick=()=>document.querySelector(b.dataset.scroll).scrollIntoView({behavior:'smooth'}));
+const reveal=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(x=>reveal.observe(x));
+relationship();next13();setInterval(relationship,1000);setInterval(next13,1000);
